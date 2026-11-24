@@ -152,7 +152,7 @@ Every variable is validated with Zod at startup (`src/lib/env.ts`, `src/lib/env.
 | `npm run lint` | ESLint with `--max-warnings=0` |
 | `npm test` | Vitest unit and component tests |
 | `npm run test:e2e` | Playwright (starts the dev server) |
-| `npm run db:start` / `db:stop` | Local Supabase |
+| `npm run db:start` / `db:stop` | Local Supabase: only the services Vitalis needs (`db:start:full` adds Studio) |
 | `npm run db:reset` | Re-apply migrations and reseed |
 | `npm run db:seed -- --patients=500 --skip-pdfs` | Seed at scale |
 | `npm run db:test` | pgTAP RLS tests |

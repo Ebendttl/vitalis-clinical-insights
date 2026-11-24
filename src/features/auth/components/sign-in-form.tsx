@@ -24,7 +24,9 @@ export function SignInForm({ next, linkError }: { next?: string; linkError?: boo
     );
   }
 
-  const error = state.status === "error" ? state.message : guestState.status === "error" ? guestState.message : linkError ? "That link has expired or was already used. Request a new one." : null;
+  // Each form reports its own error next to its own button, so one never hides the other.
+  const error = state.status === "error" ? state.message : linkError ? "That link has expired or was already used. Request a new one." : null;
+  const guestError = guestState.status === "error" ? guestState.message : null;
 
   return (
     <div className="space-y-6">
@@ -66,7 +68,13 @@ export function SignInForm({ next, linkError }: { next?: string; linkError?: boo
           <UserRoundIcon />
           {guestPending ? "Preparing demo…" : "Explore as a guest clinician"}
         </Button>
-        <p className="mt-2 text-center text-xs text-muted-foreground">Guests get a private panel of 30 synthetic patients.</p>
+        {guestError ? (
+          <p role="alert" className="mt-2 text-center text-sm text-critical">
+            {guestError}
+          </p>
+        ) : (
+          <p className="mt-2 text-center text-xs text-muted-foreground">Guests get a private panel of 30 synthetic patients.</p>
+        )}
       </form>
     </div>
   );
