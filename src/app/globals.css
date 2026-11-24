@@ -2,6 +2,8 @@
 @import "../styles/tokens.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
+/* Set by an inline script in <head> before first paint (see app/layout.tsx). */
+@custom-variant collapsed (&:where([data-sidebar="collapsed"] *));
 
 @layer base {
   * {
