@@ -1,0 +1,176 @@
+/*
+ * Vitalis design tokens.
+ *
+ * Colours are OKLCH so lightness steps are perceptually even across hues; this is
+ * what lets the three clinical colours share one lightness and read as equals.
+ * Every text/background pair is verified for WCAG AA by src/styles/contrast.test.ts.
+ *
+ * Rule: --primary (Iris) is the only decorative colour. --status-* exist solely to
+ * carry clinical meaning (normal / elevated / critical) and are always paired with
+ * an icon or label, never colour alone.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Neutrals: a cool graphite ramp */
+  --background: oklch(0.985 0.003 265);
+  --foreground: oklch(0.21 0.015 265);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--foreground);
+  --muted: oklch(0.962 0.005 265);
+  --muted-foreground: oklch(0.47 0.015 265);
+  --border: oklch(0.915 0.006 265);
+  /* Interactive boundaries need 3:1 against the surface (WCAG 1.4.11). */
+  --input: oklch(0.64 0.012 265);
+  --secondary: oklch(0.955 0.006 265);
+  --secondary-foreground: var(--foreground);
+
+  /* Iris: the single confident accent */
+  --primary: oklch(0.51 0.21 277);
+  --primary-foreground: oklch(0.99 0.005 277);
+  --accent: oklch(0.955 0.025 277);
+  --accent-foreground: oklch(0.38 0.17 277);
+  --ring: oklch(0.51 0.21 277);
+
+  /* Clinical semantics */
+  --status-normal: oklch(0.5 0.11 160);
+  --status-normal-subtle: oklch(0.96 0.03 160);
+  --status-elevated: oklch(0.52 0.12 65);
+  --status-elevated-subtle: oklch(0.965 0.04 85);
+  --status-critical: oklch(0.52 0.19 25);
+  --status-critical-subtle: oklch(0.96 0.025 25);
+  --destructive: var(--status-critical);
+
+  /* Data viz */
+  --chart-primary: var(--primary);
+  --chart-secondary: oklch(0.55 0.035 265);
+  --chart-grid: oklch(0.93 0.005 265);
+  --chart-band: oklch(0.6 0.11 160 / 0.1);
+  --chart-compare: oklch(0.7 0.02 265);
+
+  --sidebar: oklch(0.975 0.004 265);
+  --sidebar-foreground: var(--foreground);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: oklch(0.155 0.008 265);
+  --foreground: oklch(0.965 0.004 265);
+  --card: oklch(0.19 0.01 265);
+  --popover: oklch(0.21 0.011 265);
+  --muted: oklch(0.225 0.011 265);
+  --muted-foreground: oklch(0.72 0.012 265);
+  --border: oklch(0.28 0.012 265);
+  --input: oklch(0.5 0.015 265);
+  --secondary: oklch(0.24 0.011 265);
+
+  --primary: oklch(0.74 0.14 277);
+  --primary-foreground: oklch(0.17 0.03 277);
+  --accent: oklch(0.27 0.05 277);
+  --accent-foreground: oklch(0.86 0.08 277);
+  --ring: oklch(0.74 0.14 277);
+
+  --status-normal: oklch(0.78 0.13 160);
+  --status-normal-subtle: oklch(0.25 0.04 160);
+  --status-elevated: oklch(0.83 0.13 80);
+  --status-elevated-subtle: oklch(0.26 0.045 75);
+  --status-critical: oklch(0.73 0.16 22);
+  --status-critical-subtle: oklch(0.25 0.05 22);
+
+  --chart-secondary: oklch(0.68 0.03 265);
+  --chart-grid: oklch(0.26 0.01 265);
+  --chart-band: oklch(0.78 0.13 160 / 0.09);
+  --chart-compare: oklch(0.5 0.02 265);
+
+  --sidebar: oklch(0.17 0.009 265);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-normal: var(--status-normal);
+  --color-normal-subtle: var(--status-normal-subtle);
+  --color-elevated: var(--status-elevated);
+  --color-elevated-subtle: var(--status-elevated-subtle);
+  --color-critical: var(--status-critical);
+  --color-critical-subtle: var(--status-critical-subtle);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme {
+  /* Type scale: 1.2 minor third from 12px; rem so it respects user font size */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.375rem;
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.25rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 265 / 0.04), 0 0 0 1px var(--border);
+  --shadow-pop: 0 8px 24px -6px oklch(0.2 0.02 265 / 0.18), 0 0 0 1px var(--border);
+
+  --ease-out-soft: cubic-bezier(0.2, 0, 0, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+
+  --animate-fade-in: fade-in var(--duration-base) var(--ease-out-soft);
+  --animate-pulse-dot: pulse-dot 1.6s var(--ease-out-soft) infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+}
