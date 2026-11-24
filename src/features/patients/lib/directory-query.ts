@@ -40,6 +40,7 @@ export async function fetchDirectory(
   supabase: SupabaseClient<Database>,
   filters: DirectoryFilters,
   signal?: AbortSignal,
+  limit: number = DIRECTORY_LIMIT,
 ): Promise<DirectoryResult> {
   const started = performance.now();
   let query = supabase.from("patients").select(DIRECTORY_COLUMNS, { count: "exact" });
@@ -70,7 +71,7 @@ export async function fetchDirectory(
   }
 
   if (signal) query = query.abortSignal(signal);
-  const { data, error, count } = await query.limit(DIRECTORY_LIMIT);
+  const { data, error, count } = await query.limit(limit);
   if (error) throw new Error(error.message);
 
   return {
