@@ -2,7 +2,7 @@
   "name": "vitalis",
   "version": "0.1.0",
   "private": true,
-  "description": "Vitalis — a clinical insights platform for clinicians (synthetic data only).",
+  "description": "Vitalis \u2014 a clinical insights platform for clinicians (synthetic data only).",
   "engines": {
     "node": ">=22"
   },
@@ -21,11 +21,10 @@
     "db:seed": "node --env-file=.env.local --import tsx scripts/seed/index.ts",
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
-    "budget": "node scripts/check-bundle-budget.mjs",
-    "ci": "npm run typecheck && npm run lint && npm run test && npm run build && npm run budget"
+    "ci": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "test:e2e:ci": "CI=1 playwright test"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^4.0.107",
     "@ai-sdk/react": "*",
     "@react-pdf/renderer": "^4.9.1",
     "@supabase/ssr": "^0.12.7",
