@@ -3,7 +3,7 @@
 import { MenuIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, Suspense, useState } from "react";
 import { Logo, LogoMark } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -25,12 +25,30 @@ function toggleCollapsed() {
   }
 }
 
-function NavLinks({ onNavigate, collapsible }: { onNavigate?: () => void; collapsible: boolean }) {
-  const pathname = usePathname();
+type NavProps = { onNavigate?: () => void; collapsible: boolean };
+
+/**
+ * usePathname() is request data; under Cache Components it must sit inside Suspense.
+ * The fallback is the same list without an active item, so the prerendered shell
+ * is complete and nothing shifts when the active state streams in.
+ */
+function NavLinks(props: NavProps) {
+  return (
+    <Suspense fallback={<NavList {...props} pathname={null} />}>
+      <ActiveNavLinks {...props} />
+    </Suspense>
+  );
+}
+
+function ActiveNavLinks(props: NavProps) {
+  return <NavList {...props} pathname={usePathname()} />;
+}
+
+function NavList({ onNavigate, collapsible, pathname }: NavProps & { pathname: string | null }) {
   return (
     <ul className="space-y-0.5">
       {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-        const active = pathname === href || pathname.startsWith(`${href}/`);
+        const active = pathname !== null && (pathname === href || pathname.startsWith(`${href}/`));
         const link = (
           <Link
             href={href}

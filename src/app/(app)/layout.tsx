@@ -29,7 +29,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <main id="main" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none">
         {children}
       </main>
-      <CommandPalette />
+      <Suspense fallback={null}>
+        <CommandPalette />
+      </Suspense>
     </div>
   );
 }
