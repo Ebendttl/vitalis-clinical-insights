@@ -13,7 +13,7 @@ const LABELS: Record<string, string> = {
   "diagnosis.status_changed": "Changed diagnosis status",
   "ai_summary.generated": "Generated clinical summary",
   "ai_summary.failed": "Clinical summary failed validation",
-  "demo.reading_simulated": "Simulated live reading",
+  "demo.started": "Started live vitals demo",
 };
 
 function detail(row: AuditRow): string | null {

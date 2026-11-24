@@ -21,9 +21,11 @@ export function LiveDemoToggle({ patientId }: { patientId: string }) {
   useEffect(() => {
     if (!on || status !== "live") return;
     startedAt.current = Date.now();
+    let first = true;
     const tick = () =>
       startTransition(async () => {
-        const result = await simulateReading({ patientId });
+        const result = await simulateReading({ patientId, first });
+        first = false;
         if (!result.ok) {
           setError(result.error);
           setOn(false);

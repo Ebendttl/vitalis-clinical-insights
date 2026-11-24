@@ -7,7 +7,7 @@ import { env } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { nextReadings } from "../lib/simulate";
 
-const Input = z.object({ patientId: z.uuid() });
+const Input = z.object({ patientId: z.uuid(), first: z.boolean().default(false) });
 
 export type SimulateResult = { ok: true; inserted: number } | { ok: false; error: string };
 
@@ -39,6 +39,7 @@ export async function simulateReading(input: z.input<typeof Input>): Promise<Sim
   const { error } = await supabase.from("vital_readings").insert(rows);
   if (error) return { ok: false, error: "This patient isn't on your panel." };
 
-  void writeAudit({ action: "demo.reading_simulated", entityType: "patient", entityId: patientId, patientId });
+  // One audit entry per demo session, not per tick.
+  if (parsed.data.first) void writeAudit({ action: "demo.started", entityType: "patient", entityId: patientId, patientId }, supabase);
   return { ok: true, inserted: rows.length };
 }

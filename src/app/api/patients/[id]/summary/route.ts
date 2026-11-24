@@ -11,7 +11,7 @@ import { getPatient } from "@/features/patients/server/queries";
 import { ageFromDob } from "@/features/vitals/lib/risk";
 import { getRecentReadings } from "@/features/vitals/server/queries";
 import { env } from "@/lib/env";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, type ServerSupabase } from "@/lib/supabase/server";
 
 export const maxDuration = 30;
 
@@ -47,8 +47,11 @@ function failureReason(error: unknown): string {
   return "unavailable";
 }
 
-function fallback(patientId: string, digest: Digest, reason: string) {
-  void writeAudit({ action: "ai_summary.generated", entityType: "patient", entityId: patientId, patientId, metadata: { source: "rule-based", reason } });
+function fallback(supabase: ServerSupabase, patientId: string, digest: Digest, reason: string) {
+  void writeAudit(
+    { action: "ai_summary.generated", entityType: "patient", entityId: patientId, patientId, metadata: { source: "rule-based", reason } },
+    supabase,
+  );
   return respond(textStream(JSON.stringify(ruleBasedSummary(digest))), "rule-based", { [FALLBACK_REASON_HEADER]: reason });
 }
 
@@ -90,7 +93,7 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/patient
       })),
   });
 
-  if (!env.ANTHROPIC_API_KEY) return fallback(id, digest, "not_configured");
+  if (!env.ANTHROPIC_API_KEY) return fallback(supabase, id, digest, "not_configured");
 
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 1, timeout: 25_000 });
   const stream = client.messages.stream(
@@ -140,7 +143,7 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/patient
             entityId: id,
             patientId: id,
             metadata: { source: "model", model: message.model, stop_reason: message.stop_reason, output_tokens: message.usage.output_tokens },
-          });
+          }, supabase);
           controller.close();
         })
         .catch((error: unknown) => {
@@ -165,7 +168,7 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/patient
   } catch (error) {
     stream.abort();
     void body.cancel().catch(() => {});
-    return fallback(id, digest, failureReason(error));
+    return fallback(supabase, id, digest, failureReason(error));
   }
 
   return respond(body, "model");

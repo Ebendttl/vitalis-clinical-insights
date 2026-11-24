@@ -1,7 +1,7 @@
 import "server-only";
 import { after } from "next/server";
 import type { Json } from "@/lib/supabase/database.types";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, type ServerSupabase } from "@/lib/supabase/server";
 
 export type AuditAction =
   | "patient.viewed"
@@ -11,13 +11,14 @@ export type AuditAction =
   | "diagnosis.status_changed"
   | "ai_summary.generated"
   | "ai_summary.failed"
-  | "demo.reading_simulated";
+  | "demo.started";
 
 type AuditEntry = { action: AuditAction; entityType: string; entityId?: string; patientId?: string; metadata?: Json };
 
 /** Writes through the SECURITY DEFINER log_audit() so the table stays append-only. */
-export async function writeAudit(entry: AuditEntry) {
-  const supabase = await createClient();
+export async function writeAudit(entry: AuditEntry, client?: ServerSupabase) {
+  // Pass the request's client when writing after the response has started streaming.
+  const supabase = client ?? (await createClient());
   const { error } = await supabase.rpc("log_audit", {
     p_action: entry.action,
     p_entity_type: entry.entityType,
