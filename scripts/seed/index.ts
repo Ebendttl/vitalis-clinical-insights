@@ -11,7 +11,6 @@
 import { Faker, en } from "@faker-js/faker";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { createElement } from "react";
 import { LabReportDocument } from "../../src/features/labs/pdf/lab-report-document";
 import { type GeneratedRecord, generatePatient } from "./generate";
 
@@ -71,8 +70,9 @@ async function uploadPdfs(db: SupabaseClient, records: GeneratedRecord[]) {
   for (let i = 0; i < jobs.length; i += CONCURRENCY) {
     await Promise.all(
       jobs.slice(i, i + CONCURRENCY).map(async ({ rec, lab }) => {
+        // Called as a function (not createElement) so renderToBuffer receives the <Document> element itself.
         const pdf = await renderToBuffer(
-          createElement(LabReportDocument, {
+          LabReportDocument({
             reportId: lab.id,
             type: lab.type,
             status: lab.status,
